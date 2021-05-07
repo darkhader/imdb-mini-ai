@@ -14,8 +14,9 @@ appService = AppService();
 def home():
     return "App Works!!!"
 
-@app.route('/api/<string:title>')
+@app.route('/api', methods = ['POST'])
 @cross_origin(supports_credentials=True)
-def get(title):
+def get():
+    title = request.form['title']
     return appService.get(title)
 

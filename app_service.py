@@ -34,7 +34,10 @@ class AppService:
             return df[df.index == index]["title"].values[0]
 
         def get_index_from_title(title):
-            return df[df.title == title]["index"].values[0]
+            if df[df.title == title]["index"].size == 0:
+                return title
+            else:
+                return df[df.title == title]["index"].values[0]
         ##################################################
 
         ##Step 1: Read CSV File
@@ -65,22 +68,24 @@ class AppService:
         ##Step 5: Compute the Cosine Similarity based on the count_matrix
         cosine_sim = cosine_similarity(count_matrix) 
         movie_user_likes = title
-
+        movie_index = title
         ## Step 6: Get index of this movie from its title
         movie_index = get_index_from_title(movie_user_likes)
+        if movie_index == title:
+            return json.dumps([])
+        else:
+            similar_movies =  list(enumerate(cosine_sim[movie_index]))
 
-        similar_movies =  list(enumerate(cosine_sim[movie_index]))
+            ## Step 7: Get a list of similar movies in descending order of similarity score
+            sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
 
-        ## Step 7: Get a list of similar movies in descending order of similarity score
-        sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
-
-        ## Step 8: Print titles of first 50 movies
-        i=0
-        output = []
-        for element in sorted_similar_movies:
-                print 	(element[0])
+            ## Step 8: Print titles of first 50 movies
+            i=0
+            output = []
+            for element in sorted_similar_movies:
+                print(element[0])
                 output.append(get_title_from_index(element[0]))
                 i=i+1
                 if i>50:
                     break
-        return json.dumps(output)
+            return json.dumps(output)
