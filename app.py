@@ -14,8 +14,11 @@ appService = AppService();
 def home():
     return "App Works!!!"
 
-@app.route('/api/<string:title>')
+@app.route('/', methods=['POST'])
 @cross_origin(supports_credentials=True)
-def get(title):
+def get():
+    req_data = request.get_json(force=True)
+    title = req_data['title']
+    print(title)
     return appService.get(title)
 

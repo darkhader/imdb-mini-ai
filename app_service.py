@@ -38,18 +38,18 @@ class AppService:
         ##################################################
 
         ##Step 1: Read CSV File
-        df = pd.read_csv("movie_dataset.csv")
+        df = pd.read_csv("move1.csv",encoding='iso-8859-1')
     #print df.columns
     ##Step 2: Select Features
 
-        features = ['keywords','cast','genres','director']
+        features = ['title','description']
     ##Step 3: Create a column in DF which combines all selected features
         for feature in features:
             df[feature] = df[feature].fillna('')
 
         def combine_features(row):
             try:
-                return row['keywords'] +" "+row['cast']+" "+row["genres"]+" "+row["director"]
+                return row['title'] +" "+row['description']
             except:
                 print("Error:", row)
 
@@ -73,12 +73,12 @@ class AppService:
 
         ## Step 7: Get a list of similar movies in descending order of similarity score
         sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)
-
+        print(sorted_similar_movies)
         ## Step 8: Print titles of first 50 movies
         i=0
         output = []
         for element in sorted_similar_movies:
-                print 	(element[0])
+                print(element[0])
                 output.append(get_title_from_index(element[0]))
                 i=i+1
                 if i>50:
